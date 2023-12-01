@@ -1,6 +1,7 @@
 name: MANUAL Assertions and static report
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
 
 jobs:
   demo:
@@ -10,11 +11,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.16.1'
+
       - name: Install Dependencies
-        run: npm install -g @unlighthouse/cli puppeteer netlify-cli
+        run: |
+          npm install -g @unlighthouse/cli puppeteer netlify-cli
 
       - name: Unlighthouse assertions and client
-        run: unlighthouse-ci --site patbo.com.br --build-static --samples 200 --disable-sitemap
+        run: unlighthouse-ci --site https://www.patbo.com.br/ --debug --build-static --disable-sitemap
 
       - name: Deploy
         run: netlify deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
